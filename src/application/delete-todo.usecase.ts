@@ -1,4 +1,4 @@
-import { TodoRepository } from "../domain/todo.repository";
+import { TodoRepository } from "../infrastructure/repositories/todo.repository";
 
 export class DeleteTodoUseCase {
   private todoRepository: TodoRepository;

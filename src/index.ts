@@ -1,7 +1,6 @@
 import { config } from "dotenv";
 import express, { Express, Request, Response } from "express";
-import { AppDataSource } from "./infrastructure/database/connection";
-import todoRouter from "./infrastructure/todo.router";
+import { Todorouter } from "./infrastructure/routes/todo.routes";
 
 config();
 
@@ -12,18 +11,11 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 app.get("/", (req: Request, res: Response) => {
-  res.send("Hello Typescript");
+  res.send("heeyy");
 });
 
-app.use(todoRouter);
+app.use(Todorouter);
 
-AppDataSource.initialize()
-  .then(() => {
-    console.log("Data Source has been initialized!");
-    app.listen(PORT, () => {
-      console.log(`Server listen on port ${PORT}`);
-    });
-  })
-  .catch((err) => {
-    console.error("Error during Data Source initialization", err);
-  });
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+} );

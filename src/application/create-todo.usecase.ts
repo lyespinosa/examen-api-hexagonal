@@ -1,5 +1,6 @@
-import { Todo } from "../domain/todo";
-import { TodoRepository } from "../domain/todo.repository";
+import { TodoEntity } from "../domain/todo.entity";
+import { TodoRepository } from "../infrastructure/repositories/todo.repository";
+import { v4 as uuidv4 } from 'uuid';
 
 export class CreateTodoUseCase {
   private todoRepository: TodoRepository;
@@ -8,12 +9,14 @@ export class CreateTodoUseCase {
     this.todoRepository = todoRepository;
   }
 
-  async execute(todoData: Partial<Todo>): Promise<Todo> {
+  async execute(todoData: Partial<TodoEntity>): Promise<TodoEntity> {
+    const id = uuidv4();
+    const completed = todoData.completed || false;
     const { description } = todoData;
     if (description === undefined) {
       throw new Error("Description is missing");
     }
-    const newTodo = new Todo(description);
+    const newTodo = new TodoEntity(id, description, completed);
     const createdTodo = await this.todoRepository.createTodo(newTodo);
     return createdTodo;
   }

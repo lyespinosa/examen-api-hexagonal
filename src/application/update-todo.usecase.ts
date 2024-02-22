@@ -1,5 +1,5 @@
-import { Todo } from "../domain/todo";
-import { TodoRepository } from "../domain/todo.repository";
+import { TodoEntity } from "../domain/todo.entity";
+import { TodoRepository } from "../infrastructure/repositories/todo.repository";
 
 export class UpdateTodoUseCase {
   private todoRepository: TodoRepository;
@@ -8,19 +8,16 @@ export class UpdateTodoUseCase {
     this.todoRepository = todoRepository;
   }
 
-  async execute(
-    uuid: string,
-    updatedData: Partial<Todo>
-  ): Promise<Todo | Error> {
-    const existingTodo = await this.todoRepository.readTodoByUUID(uuid);
-    if (!existingTodo) {
-      return new Error("Todo does not exist");
+  async execute(id: string, todoData: Partial<TodoEntity>): Promise<TodoEntity> {
+    const todo = await this.todoRepository.getTodoByUUID(id);
+    if (todoData.description !== undefined) {
+      todo.description = todoData.description;
     }
-    const updatedTodoData = { ...existingTodo, ...updatedData };
-    const updatedTodo = await this.todoRepository.updateTodo(
-      uuid,
-      updatedTodoData
-    );
+    if (todoData.completed !== undefined) {
+      todo.completed = todoData.completed;
+    }
+    todo.updatedAt = new Date();
+    const updatedTodo = await this.todoRepository.updateTodo(id, todo);
     return updatedTodo;
   }
 }
